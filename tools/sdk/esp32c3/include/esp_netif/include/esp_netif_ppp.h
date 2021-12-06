@@ -38,11 +38,6 @@ typedef struct esp_netif_ppp_config {
  */
 #define NETIF_PP_PHASE_OFFSET (0x100)
 
-/** @brief event id offset for internal errors
- *
- */
-#define NETIF_PPP_INTERNAL_ERR_OFFSET (0x200)
-
 /** @brief event ids for different PPP related events
  *
  */
@@ -73,7 +68,6 @@ typedef enum {
     NETIF_PPP_PHASE_RUNNING      = NETIF_PP_PHASE_OFFSET +  10,
     NETIF_PPP_PHASE_TERMINATE    = NETIF_PP_PHASE_OFFSET +  11,
     NETIF_PPP_PHASE_DISCONNECT   = NETIF_PP_PHASE_OFFSET +  12,
-    NETIF_PPP_CONNECT_FAILED     = NETIF_PPP_INTERNAL_ERR_OFFSET + 0,
 } esp_netif_ppp_status_event_t;
 
 /** @brief definitions of different authorisation types
@@ -95,8 +89,7 @@ typedef enum {
  * @param[in]  user User name
  * @param[in]  passwd Password
  *
- * @return     ESP_OK on success,
- *             ESP_ERR_ESP_NETIF_INVALID_PARAMS if the supplied netif is not of PPP type, or netif is null
+ * @return     ESP_OK on success, ESP_ERR_ESP_NETIF_INVALID_PARAMS if netif null or not PPP
  */
 esp_err_t esp_netif_ppp_set_auth(esp_netif_t *netif, esp_netif_auth_type_t authtype, const char *user, const char *passwd);
 
@@ -105,20 +98,10 @@ esp_err_t esp_netif_ppp_set_auth(esp_netif_t *netif, esp_netif_auth_type_t autht
  * @param[in]  esp_netif Handle to esp-netif instance
  * @param[in]  config Pointer to PPP netif configuration structure
  *
- * @return     ESP_OK on success,
- *             ESP_ERR_ESP_NETIF_INVALID_PARAMS if the supplied netif is not of PPP type, or netif is null
+ * @return     ESP_OK on success, ESP_ERR_ESP_NETIF_INVALID_PARAMS if netif null or not PPP
  */
 esp_err_t esp_netif_ppp_set_params(esp_netif_t *netif, const esp_netif_ppp_config_t *config);
 
-/** @brief Gets parameters configured in the supplied esp-netif.
- *
- * @param[in]  esp_netif Handle to esp-netif instance
- * @param[out]  config Pointer to PPP netif configuration structure
- *
- * @return     ESP_OK on success,
- *             ESP_ERR_ESP_NETIF_INVALID_PARAMS if the supplied netif is not of PPP type, or netif is null
- */
-esp_err_t esp_netif_ppp_get_params(esp_netif_t *netif, esp_netif_ppp_config_t *config);
 
 #ifdef __cplusplus
 }

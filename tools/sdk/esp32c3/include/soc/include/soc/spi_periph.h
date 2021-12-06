@@ -30,7 +30,8 @@
 #endif
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #if CONFIG_IDF_TARGET_ESP32S2
@@ -39,6 +40,8 @@ extern "C" {
 #define SPI_FWRITE_DIO 0
 #define SPI_FWRITE_QIO 0
 #endif
+
+
 
 /*
  Stores a bunch of per-spi-peripheral data.
@@ -50,22 +53,10 @@ typedef struct {
     const uint8_t spiq_out;
     const uint8_t spiwp_out;
     const uint8_t spihd_out;
-#if SOC_SPI_SUPPORT_OCT
-    const uint8_t spid4_out;
-    const uint8_t spid5_out;
-    const uint8_t spid6_out;
-    const uint8_t spid7_out;
-#endif // SOC_SPI_SUPPORT_OCT
     const uint8_t spid_in;          //GPIO mux input signals
     const uint8_t spiq_in;
     const uint8_t spiwp_in;
     const uint8_t spihd_in;
-#if SOC_SPI_SUPPORT_OCT
-    const uint8_t spid4_in;
-    const uint8_t spid5_in;
-    const uint8_t spid6_in;
-    const uint8_t spid7_in;
-#endif // SOC_SPI_SUPPORT_OCT
     const uint8_t spics_out[3];     // /CS GPIO output mux signals
     const uint8_t spics_in;
     const uint8_t spidqs_out;

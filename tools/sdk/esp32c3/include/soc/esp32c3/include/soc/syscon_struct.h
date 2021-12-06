@@ -17,26 +17,26 @@
 extern "C" {
 #endif
 
-typedef volatile struct syscon_dev_s {
+typedef volatile struct {
     union {
         struct {
-            uint32_t pre_div_cnt:     10;
-            uint32_t clk_320m_en:      1;
-            uint32_t clk_en:           1;
-            uint32_t rst_tick_cnt:     1;
-            uint32_t reserved13:      19;
+            uint32_t apb_ctrl_pre_div_cnt: 10;
+            uint32_t apb_ctrl_clk_320m_en:  1;
+            uint32_t clk_en:                1;
+            uint32_t apb_ctrl_rst_tick_cnt: 1;
+            uint32_t reserved13:           19;
         };
         uint32_t val;
-    } sysclk_conf;
+    } apb_ctrl_sysclk_conf;
     union {
         struct {
-            uint32_t xtal_tick_num:    8;
-            uint32_t ck8m_tick_num:    8;
-            uint32_t tick_enable:      1;
-            uint32_t reserved17:      15;
+            uint32_t apb_ctrl_xtal_tick_num: 8;
+            uint32_t apb_ctrl_ck8m_tick_num: 8;
+            uint32_t apb_ctrl_tick_enable:   1;
+            uint32_t reserved17:            15;
         };
         uint32_t val;
-    } tick_conf;
+    } apb_ctrl_tick_conf;
     union {
         struct {
             uint32_t clk20_oen:       1;
@@ -53,7 +53,7 @@ typedef volatile struct syscon_dev_s {
             uint32_t reserved11:     21;
         };
         uint32_t val;
-    } clk_out_en;
+    } apb_ctrl_clk_out_en;
     uint32_t wifi_bb_cfg;                               /**/
     uint32_t wifi_bb_cfg_2;                             /**/
     uint32_t wifi_clk_en;                               /**/
@@ -161,7 +161,7 @@ typedef volatile struct syscon_dev_s {
             uint32_t reserved1:         31;
         };
         uint32_t val;
-    } sdio_ctrl;
+    } apb_ctrl_sdio_ctrl;
     union {
         struct {
             uint32_t redcy_sig0: 31;
@@ -472,7 +472,7 @@ typedef volatile struct syscon_dev_s {
     uint32_t reserved_3f0;
     uint32_t reserved_3f4;
     uint32_t reserved_3f8;
-    uint32_t date;                             /*Version control*/
+    uint32_t apb_ctrl_date;                             /*Version control*/
 } syscon_dev_t;
 extern syscon_dev_t SYSCON;
 #ifdef __cplusplus

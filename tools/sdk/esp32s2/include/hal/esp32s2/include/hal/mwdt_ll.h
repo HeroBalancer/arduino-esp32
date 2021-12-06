@@ -24,7 +24,6 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include "soc/timer_periph.h"
-#include "soc/timer_group_struct.h"
 #include "hal/wdt_types.h"
 #include "esp_attr.h"
 
@@ -43,13 +42,6 @@ _Static_assert(WDT_RESET_SIG_LENGTH_800ns == TIMG_WDT_RESET_LENGTH_800_NS, "Add 
 _Static_assert(WDT_RESET_SIG_LENGTH_1_6us == TIMG_WDT_RESET_LENGTH_1600_NS, "Add mapping to LL watchdog timeout behavior, since it's no longer naturally compatible with wdt_reset_sig_length_t");
 _Static_assert(WDT_RESET_SIG_LENGTH_3_2us == TIMG_WDT_RESET_LENGTH_3200_NS, "Add mapping to LL watchdog timeout behavior, since it's no longer naturally compatible with wdt_reset_sig_length_t");
 
-#define FORCE_MODIFY_WHOLE_REG(i, j, k) \
-{                                       \
-    typeof(i) temp_reg = (i);           \
-    temp_reg.j = (k);                   \
-    (i) = temp_reg;                     \
-}
-
 /**
  * @brief Enable the MWDT
  *
@@ -57,7 +49,7 @@ _Static_assert(WDT_RESET_SIG_LENGTH_3_2us == TIMG_WDT_RESET_LENGTH_3200_NS, "Add
  */
 FORCE_INLINE_ATTR void mwdt_ll_enable(timg_dev_t *hw)
 {
-    hw->wdtconfig0.wdt_en = 1;
+    hw->wdt_config0.en = 1;
 }
 
 /**
@@ -70,7 +62,7 @@ FORCE_INLINE_ATTR void mwdt_ll_enable(timg_dev_t *hw)
  */
 FORCE_INLINE_ATTR void mwdt_ll_disable(timg_dev_t *hw)
 {
-    hw->wdtconfig0.wdt_en = 0;
+    hw->wdt_config0.en = 0;
 }
 
 /**
@@ -81,7 +73,7 @@ FORCE_INLINE_ATTR void mwdt_ll_disable(timg_dev_t *hw)
  */
 FORCE_INLINE_ATTR bool mwdt_ll_check_if_enabled(timg_dev_t *hw)
 {
-    return (hw->wdtconfig0.wdt_en) ? true : false;
+    return (hw->wdt_config0.en) ? true : false;
 }
 
 /**
@@ -96,20 +88,20 @@ FORCE_INLINE_ATTR void mwdt_ll_config_stage(timg_dev_t *hw, wdt_stage_t stage, u
 {
     switch (stage) {
         case WDT_STAGE0:
-            hw->wdtconfig0.wdt_stg0 = behavior;
-            hw->wdtconfig2.wdt_stg0_hold = timeout;
+            hw->wdt_config0.stg0 = behavior;
+            hw->wdt_config2 = timeout;
             break;
         case WDT_STAGE1:
-            hw->wdtconfig0.wdt_stg1 = behavior;
-            hw->wdtconfig3.wdt_stg1_hold = timeout;
+            hw->wdt_config0.stg1 = behavior;
+            hw->wdt_config3 = timeout;
             break;
         case WDT_STAGE2:
-            hw->wdtconfig0.wdt_stg2 = behavior;
-            hw->wdtconfig4.wdt_stg2_hold = timeout;
+            hw->wdt_config0.stg2 = behavior;
+            hw->wdt_config4 = timeout;
             break;
         case WDT_STAGE3:
-            hw->wdtconfig0.wdt_stg3 = behavior;
-            hw->wdtconfig5.wdt_stg3_hold = timeout;
+            hw->wdt_config0.stg3 = behavior;
+            hw->wdt_config5 = timeout;
             break;
         default:
             break;
@@ -126,16 +118,16 @@ FORCE_INLINE_ATTR void mwdt_ll_disable_stage(timg_dev_t *hw, uint32_t stage)
 {
     switch (stage) {
         case WDT_STAGE0:
-            hw->wdtconfig0.wdt_stg0 = WDT_STAGE_ACTION_OFF;
+            hw->wdt_config0.stg0 = WDT_STAGE_ACTION_OFF;
             break;
         case WDT_STAGE1:
-            hw->wdtconfig0.wdt_stg1 = WDT_STAGE_ACTION_OFF;
+            hw->wdt_config0.stg1 = WDT_STAGE_ACTION_OFF;
             break;
         case WDT_STAGE2:
-            hw->wdtconfig0.wdt_stg2 = WDT_STAGE_ACTION_OFF;
+            hw->wdt_config0.stg2 = WDT_STAGE_ACTION_OFF;
             break;
         case WDT_STAGE3:
-            hw->wdtconfig0.wdt_stg3 = WDT_STAGE_ACTION_OFF;
+            hw->wdt_config0.stg3 = WDT_STAGE_ACTION_OFF;
             break;
         default:
             break;
@@ -150,7 +142,7 @@ FORCE_INLINE_ATTR void mwdt_ll_disable_stage(timg_dev_t *hw, uint32_t stage)
  */
 FORCE_INLINE_ATTR void mwdt_ll_set_edge_intr(timg_dev_t *hw, bool enable)
 {
-    hw->wdtconfig0.wdt_edge_int_en = (enable) ? 1 : 0;
+    hw->wdt_config0.edge_int_en = (enable) ? 1 : 0;
 }
 
 /**
@@ -161,7 +153,7 @@ FORCE_INLINE_ATTR void mwdt_ll_set_edge_intr(timg_dev_t *hw, bool enable)
  */
 FORCE_INLINE_ATTR void mwdt_ll_set_level_intr(timg_dev_t *hw, bool enable)
 {
-    hw->wdtconfig0.wdt_level_int_en = (enable) ? 1 : 0;
+    hw->wdt_config0.level_int_en = (enable) ? 1 : 0;
 }
 
 /**
@@ -172,7 +164,7 @@ FORCE_INLINE_ATTR void mwdt_ll_set_level_intr(timg_dev_t *hw, bool enable)
  */
 FORCE_INLINE_ATTR void mwdt_ll_set_cpu_reset_length(timg_dev_t *hw, wdt_reset_sig_length_t length)
 {
-    hw->wdtconfig0.wdt_cpu_reset_length = length;
+    hw->wdt_config0.cpu_reset_length = length;
 }
 
 /**
@@ -183,7 +175,7 @@ FORCE_INLINE_ATTR void mwdt_ll_set_cpu_reset_length(timg_dev_t *hw, wdt_reset_si
  */
 FORCE_INLINE_ATTR void mwdt_ll_set_sys_reset_length(timg_dev_t *hw, wdt_reset_sig_length_t length)
 {
-    hw->wdtconfig0.wdt_sys_reset_length = length;
+    hw->wdt_config0.sys_reset_length = length;
 }
 
 /**
@@ -198,7 +190,7 @@ FORCE_INLINE_ATTR void mwdt_ll_set_sys_reset_length(timg_dev_t *hw, wdt_reset_si
  */
 FORCE_INLINE_ATTR void mwdt_ll_set_flashboot_en(timg_dev_t* hw, bool enable)
 {
-    hw->wdtconfig0.wdt_flashboot_mod_en = (enable) ? 1 : 0;
+    hw->wdt_config0.flashboot_mod_en = (enable) ? 1 : 0;
 }
 
 /**
@@ -209,9 +201,7 @@ FORCE_INLINE_ATTR void mwdt_ll_set_flashboot_en(timg_dev_t* hw, bool enable)
  */
 FORCE_INLINE_ATTR void mwdt_ll_set_prescaler(timg_dev_t *hw, uint32_t prescaler)
 {
-    // In case the compiler optimise a 32bit instruction (e.g. s32i) into 8/16bit instruction (e.g. s8i, which is not allowed to access a register)
-    // We take care of the "read-modify-write" procedure by ourselves.
-    FORCE_MODIFY_WHOLE_REG(hw->wdtconfig1, wdt_clk_prescaler, prescaler);
+    hw->wdt_config1.clk_prescale = prescaler;
 }
 
 /**
@@ -223,7 +213,7 @@ FORCE_INLINE_ATTR void mwdt_ll_set_prescaler(timg_dev_t *hw, uint32_t prescaler)
  */
 FORCE_INLINE_ATTR void mwdt_ll_feed(timg_dev_t *hw)
 {
-    hw->wdtfeed.wdt_feed = 1;
+    hw->wdt_feed = 1;
 }
 
 /**
@@ -235,7 +225,7 @@ FORCE_INLINE_ATTR void mwdt_ll_feed(timg_dev_t *hw)
  */
 FORCE_INLINE_ATTR void mwdt_ll_write_protect_enable(timg_dev_t *hw)
 {
-    hw->wdtwprotect.wdt_wkey = 0;
+    hw->wdt_wprotect = 0;
 }
 
 /**
@@ -245,7 +235,7 @@ FORCE_INLINE_ATTR void mwdt_ll_write_protect_enable(timg_dev_t *hw)
  */
 FORCE_INLINE_ATTR void mwdt_ll_write_protect_disable(timg_dev_t *hw)
 {
-    hw->wdtwprotect.wdt_wkey = TIMG_WDT_WKEY_VALUE;
+    hw->wdt_wprotect = TIMG_WDT_WKEY_VALUE;
 }
 
 /**
@@ -255,7 +245,7 @@ FORCE_INLINE_ATTR void mwdt_ll_write_protect_disable(timg_dev_t *hw)
  */
 FORCE_INLINE_ATTR void mwdt_ll_clear_intr_status(timg_dev_t* hw)
 {
-    hw->int_clr_timers.wdt_int_clr = 1;
+    hw->int_clr.wdt = 1;
 }
 
 /**
@@ -266,7 +256,7 @@ FORCE_INLINE_ATTR void mwdt_ll_clear_intr_status(timg_dev_t* hw)
  */
 FORCE_INLINE_ATTR void mwdt_ll_set_intr_enable(timg_dev_t* hw, bool enable)
 {
-    hw->int_ena_timers.wdt_int_ena = (enable) ? 1 : 0;
+    hw->int_ena.wdt = (enable) ? 1 : 0;
 }
 
 #ifdef __cplusplus

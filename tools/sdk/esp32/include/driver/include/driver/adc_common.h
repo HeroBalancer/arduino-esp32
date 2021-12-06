@@ -1,8 +1,16 @@
-/*
- * SPDX-FileCopyrightText: 2015-2021 Espressif Systems (Shanghai) CO LTD
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+// Copyright 2015-2016 Espressif Systems (Shanghai) PTE LTD
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #pragma once
 
@@ -41,11 +49,11 @@ typedef enum {
     ADC1_CHANNEL_5,     /*!< ADC1 channel 5 is GPIO6  */
     ADC1_CHANNEL_6,     /*!< ADC1 channel 6 is GPIO7  */
     ADC1_CHANNEL_7,     /*!< ADC1 channel 7 is GPIO8  */
-    ADC1_CHANNEL_8,     /*!< ADC1 channel 8 is GPIO9  */
-    ADC1_CHANNEL_9,     /*!< ADC1 channel 9 is GPIO10 */
+    ADC1_CHANNEL_8,     /*!< ADC1 channel 6 is GPIO9  */
+    ADC1_CHANNEL_9,     /*!< ADC1 channel 7 is GPIO10 */
     ADC1_CHANNEL_MAX,
 } adc1_channel_t;
-#elif CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32H2
+#elif CONFIG_IDF_TARGET_ESP32C3
 /**** `adc1_channel_t` will be deprecated functions, combine into `adc_channel_t` ********/
 typedef enum {
     ADC1_CHANNEL_0 = 0, /*!< ADC1 channel 0 is GPIO0 */
@@ -72,7 +80,7 @@ typedef enum {
     ADC2_CHANNEL_9,     /*!< ADC2 channel 9 is GPIO26 (ESP32), GPIO20 (ESP32-S2) */
     ADC2_CHANNEL_MAX,
 } adc2_channel_t;
-#elif CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32H2
+#elif CONFIG_IDF_TARGET_ESP32C3
 /**** `adc2_channel_t` will be deprecated functions, combine into `adc_channel_t` ********/
 typedef enum {
     ADC2_CHANNEL_0 = 0, /*!< ADC2 channel 0 is GPIO5 */
@@ -103,7 +111,7 @@ typedef enum {
 #define ADC_WIDTH_11Bit ADC_WIDTH_BIT_11
 #define ADC_WIDTH_12Bit ADC_WIDTH_BIT_12
 
-#if CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32H2
+#if CONFIG_IDF_TARGET_ESP32C3
 /**
  * @brief Digital ADC DMA read max timeout value, it may make the ``adc_digi_read_bytes`` block forever if the OS supports
  */
@@ -121,13 +129,13 @@ typedef enum {
     ADC_ENCODE_MAX,
 } adc_i2s_encode_t;
 
-#if CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32H2
+#if CONFIG_IDF_TARGET_ESP32C3
 //This feature is currently supported on ESP32C3, will be supported on other chips soon
 /**
  * @brief Digital ADC DMA configuration
  */
 typedef struct adc_digi_init_config_s {
-    uint32_t max_store_buf_size;    ///< Max length of the converted data that driver can store before they are processed.
+    uint32_t max_store_buf_size;    ///< Max length of the converted data that driver can store before they are processed. When this length is reached, driver will dump out all the old data and start to store them again.
     uint32_t conv_num_each_intr;    ///< Bytes of data that can be converted in 1 interrupt.
     uint32_t adc1_chan_mask;        ///< Channel list of ADC1 to be initialized.
     uint32_t adc2_chan_mask;        ///< Channel list of ADC2 to be initialized.
@@ -167,7 +175,7 @@ void adc_power_acquire(void);
  */
 void adc_power_release(void);
 
-#if !CONFIG_IDF_TARGET_ESP32C3 && !CONFIG_IDF_TARGET_ESP32H2
+#if !CONFIG_IDF_TARGET_ESP32C3
 /**
  * @brief Initialize ADC pad
  * @param adc_unit ADC unit index
@@ -177,7 +185,7 @@ void adc_power_release(void);
  *     - ESP_ERR_INVALID_ARG Parameter error
  */
 esp_err_t adc_gpio_init(adc_unit_t adc_unit, adc_channel_t channel);
-#endif //#if !CONFIG_IDF_TARGET_ESP32C3 && !CONFIG_IDF_TARGET_ESP32H2
+#endif //#if !CONFIG_IDF_TARGET_ESP32C3
 
 /*---------------------------------------------------------------
                     ADC Single Read Setting
@@ -276,7 +284,7 @@ esp_err_t adc1_config_width(adc_bits_width_t width_bit);
  */
 int adc1_get_raw(adc1_channel_t channel);
 
-#if !CONFIG_IDF_TARGET_ESP32C3 && !CONFIG_IDF_TARGET_ESP32H2
+#if !CONFIG_IDF_TARGET_ESP32C3
 /**
  * @brief Set ADC data invert
  * @param adc_unit ADC unit index
@@ -317,7 +325,7 @@ esp_err_t adc_set_data_width(adc_unit_t adc_unit, adc_bits_width_t width_bit);
  * to be called to configure ADC1 channels, before ADC1 is used by the ULP.
  */
 void adc1_ulp_enable(void);
-#endif  //#if !CONFIG_IDF_TARGET_ESP32C3 && !CONFIG_IDF_TARGET_ESP32H2
+#endif  //#if !CONFIG_IDF_TARGET_ESP32C3
 
 /**
  * @brief Get the GPIO number of a specific ADC2 channel.
@@ -477,7 +485,7 @@ esp_err_t adc_digi_deinit(void);
  */
 esp_err_t adc_digi_controller_config(const adc_digi_config_t *config);
 
-#if CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32H2
+#if CONFIG_IDF_TARGET_ESP32C3
 //This feature is currently supported on ESP32C3, will be supported on other chips soon
 /*---------------------------------------------------------------
                     DMA setting
@@ -537,7 +545,7 @@ esp_err_t adc_digi_read_bytes(uint8_t *buf, uint32_t length_max, uint32_t *out_l
  */
 esp_err_t adc_digi_deinitialize(void);
 
-#endif //#if CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32H2
+#endif //#if CONFIG_IDF_TARGET_ESP32C3
 
 #ifdef __cplusplus
 }

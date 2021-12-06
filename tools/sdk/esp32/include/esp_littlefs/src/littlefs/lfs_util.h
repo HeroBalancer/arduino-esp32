@@ -49,7 +49,6 @@ extern "C"
 // code footprint
 
 // Logging functions
-#ifndef LFS_TRACE
 #ifdef LFS_YES_TRACE
 #define LFS_TRACE_(fmt, ...) \
     printf("%s:%d:trace: " fmt "%s\n", __FILE__, __LINE__, __VA_ARGS__)
@@ -57,9 +56,7 @@ extern "C"
 #else
 #define LFS_TRACE(...)
 #endif
-#endif
 
-#ifndef LFS_DEBUG
 #ifndef LFS_NO_DEBUG
 #define LFS_DEBUG_(fmt, ...) \
     printf("%s:%d:debug: " fmt "%s\n", __FILE__, __LINE__, __VA_ARGS__)
@@ -67,9 +64,7 @@ extern "C"
 #else
 #define LFS_DEBUG(...)
 #endif
-#endif
 
-#ifndef LFS_WARN
 #ifndef LFS_NO_WARN
 #define LFS_WARN_(fmt, ...) \
     printf("%s:%d:warn: " fmt "%s\n", __FILE__, __LINE__, __VA_ARGS__)
@@ -77,9 +72,7 @@ extern "C"
 #else
 #define LFS_WARN(...)
 #endif
-#endif
 
-#ifndef LFS_ERROR
 #ifndef LFS_NO_ERROR
 #define LFS_ERROR_(fmt, ...) \
     printf("%s:%d:error: " fmt "%s\n", __FILE__, __LINE__, __VA_ARGS__)
@@ -87,15 +80,12 @@ extern "C"
 #else
 #define LFS_ERROR(...)
 #endif
-#endif
 
 // Runtime assertions
-#ifndef LFS_ASSERT
 #ifndef LFS_NO_ASSERT
 #define LFS_ASSERT(test) assert(test)
 #else
 #define LFS_ASSERT(test)
-#endif
 #endif
 
 

@@ -18,7 +18,7 @@
 #include "soc/soc_caps.h"
 #include "soc/syscon_struct.h"
 
-#if SOC_ADC_RTC_CTRL_SUPPORTED
+#if SOC_ADC_SUPPORT_RTC_CTRL
 #include "soc/sens_reg.h"
 #include "soc/sens_struct.h"
 #endif

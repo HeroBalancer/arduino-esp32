@@ -14,7 +14,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/poll.h>
-#include <sys/dirent.h>
+#include <dirent.h>
 #include <string.h>
 #include "sdkconfig.h"
 

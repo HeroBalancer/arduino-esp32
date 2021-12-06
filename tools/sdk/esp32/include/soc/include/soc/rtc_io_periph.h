@@ -27,7 +27,7 @@
 #include "soc/rtc_cntl_reg.h"
 #include "soc/rtc_cntl_struct.h"
 
-#if SOC_ADC_RTC_CTRL_SUPPORTED
+#if SOC_ADC_SUPPORT_RTC_CTRL
 #include "soc/sens_struct.h"
 #endif
 

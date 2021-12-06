@@ -18,8 +18,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include "soc.h"
 
-typedef volatile struct spi_dev_s {
+typedef volatile struct {
     union {
         struct {
             uint32_t conf_bitlen                   :    18;  /*Define the APB cycles of  SPI_CONF state. Can be configured in CONF state.*/

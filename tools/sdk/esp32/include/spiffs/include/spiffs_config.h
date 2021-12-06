@@ -19,7 +19,6 @@
 #include <unistd.h>
 #include <sdkconfig.h>
 #include <esp_log.h>
-#include <assert.h>
 
 // compile time switches
 #define SPIFFS_TAG "SPIFFS"

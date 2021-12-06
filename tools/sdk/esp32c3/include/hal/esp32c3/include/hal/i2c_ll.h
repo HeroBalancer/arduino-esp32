@@ -15,11 +15,8 @@
 // The LL layer for I2C register operations
 
 #pragma once
-
-#include "hal/misc.h"
 #include "soc/i2c_periph.h"
 #include "soc/soc_caps.h"
-#include "soc/i2c_struct.h"
 #include "hal/i2c_types.h"
 #include "soc/rtc_cntl_reg.h"
 #include "esp_rom_sys.h"
@@ -31,7 +28,7 @@ extern "C" {
 #define I2C_LL_INTR_MASK          (0x3fff) /*!< I2C all interrupt bitmap */
 
 /**
- * @brief I2C hardware cmd register fields.
+ * @brief I2C hardware cmd register filed.
  */
 typedef union {
     struct {
@@ -157,7 +154,7 @@ static inline void i2c_ll_update(i2c_dev_t *hw)
  */
 static inline void i2c_ll_set_bus_timing(i2c_dev_t *hw, i2c_clk_cal_t *bus_cfg)
 {
-    HAL_FORCE_MODIFY_U32_REG_FIELD(hw->clk_conf, sclk_div_num, bus_cfg->clkm_div - 1);
+    hw->clk_conf.sclk_div_num = bus_cfg->clkm_div - 1;
     //scl period
     hw->scl_low_period.period = bus_cfg->scl_low - 1;
     hw->scl_high_period.period = bus_cfg->scl_high;
@@ -579,7 +576,7 @@ static inline void i2c_ll_get_scl_timing(i2c_dev_t *hw, int *high_period, int *l
 static inline void i2c_ll_write_txfifo(i2c_dev_t *hw, uint8_t *ptr, uint8_t len)
 {
     for (int i = 0; i< len; i++) {
-        HAL_FORCE_MODIFY_U32_REG_FIELD(hw->fifo_data, data, ptr[i]);
+        hw->fifo_data.data = ptr[i];
     }
 }
 
@@ -595,7 +592,7 @@ static inline void i2c_ll_write_txfifo(i2c_dev_t *hw, uint8_t *ptr, uint8_t len)
 static inline void i2c_ll_read_rxfifo(i2c_dev_t *hw, uint8_t *ptr, uint8_t len)
 {
     for(int i = 0; i < len; i++) {
-        ptr[i] = HAL_FORCE_READ_U32_REG_FIELD(hw->fifo_data, data);
+        ptr[i] = hw->fifo_data.data;
     }
 }
 
@@ -804,12 +801,9 @@ static inline void i2c_ll_master_fsm_rst(i2c_dev_t *hw)
 static inline void i2c_ll_master_clr_bus(i2c_dev_t *hw)
 {
     hw->scl_sp_conf.scl_rst_slv_num = 9;
+    hw->scl_sp_conf.scl_rst_slv_en = 0;
+    hw->ctr.conf_upgate = 1;
     hw->scl_sp_conf.scl_rst_slv_en = 1;
-    hw->ctr.conf_upgate = 1;
-    // hardward will clear scl_rst_slv_en after sending SCL pulses,
-    // and we should set conf_upgate bit to synchronize register value.
-    while (hw->scl_sp_conf.scl_rst_slv_en);
-    hw->ctr.conf_upgate = 1;
 }
 
 /**

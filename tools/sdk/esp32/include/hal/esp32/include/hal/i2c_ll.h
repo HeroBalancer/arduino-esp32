@@ -15,10 +15,7 @@
 // The LL layer for I2C register operations
 
 #pragma once
-
-#include "hal/misc.h"
 #include "soc/i2c_periph.h"
-#include "soc/i2c_struct.h"
 #include "hal/i2c_types.h"
 
 #ifdef __cplusplus
@@ -28,7 +25,7 @@ extern "C" {
 #define I2C_LL_INTR_MASK          (0x3fff) /*!< I2C all interrupt bitmap */
 
 /**
- * @brief I2C hardware cmd register fields.
+ * @brief I2C hardware cmd register filed.
  */
 typedef union {
     struct {
@@ -561,7 +558,7 @@ static inline void i2c_ll_write_txfifo(i2c_dev_t *hw, uint8_t *ptr, uint8_t len)
 static inline void i2c_ll_read_rxfifo(i2c_dev_t *hw, uint8_t *ptr, uint8_t len)
 {
     for(int i = 0; i < len; i++) {
-        ptr[i] = HAL_FORCE_READ_U32_REG_FIELD(hw->fifo_data, data);
+        ptr[i] = hw->fifo_data.data;
     }
 }
 
